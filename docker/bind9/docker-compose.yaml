@@ -8,8 +8,8 @@ services:
       - BIND9_USER=root
       - TZ=Europe/Berlin
     ports:
-      - "53:53/tcp"
-      - "53:53/udp"
+      - "53:53/tcp" # Will conflict with the host's DNS server, check README.md
+      - "53:53/udp" # Will conflict with the host's DNS server, check README.md
     volumes:
       - ./config:/etc/bind
       - ./cache:/var/cache/bind
