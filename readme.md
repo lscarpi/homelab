@@ -18,7 +18,7 @@ This repository contains the configuration files for my homelab. Feel free to us
 - [Traefik](https://doc.traefik.io/traefik/)
 - [Redis](https://redis.io/)
 - [RabbitMQ](https://www.rabbitmq.com/)
-- [Mailpit](https://mailpit.org/)
+- [Mailpit](https://mailpit.axllent.org/)
 
 # Setup Instructions
 
@@ -50,3 +50,5 @@ With Portainer installed, you can set a public access to it in the Cloudflare Tu
 Now, you can access your Portainer instance by going to `portainer.yourdomain.com`.
 
 From here, you can deploy the rest of the services using the Portainer UI or by using the kubectl command line.
+
+After deploying the services, if you wish to expose them to the internet, you can do so by following the same steps as for the Portainer service. Through the Cloudflare Public Hostnames.

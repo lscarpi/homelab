@@ -1,0 +1,95 @@
+# ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-test-cm
+data:
+  # key: value
+  # file: |
+  #   content
+  # ---
+  nginx.conf: |
+    user nginx;
+    worker_processes 1;
+    events {
+      worker_connections  10240;
+    }
+    http {
+      server {
+        listen       80;
+        server_name  _;
+        location / {
+          root   /usr/share/nginx/html;
+          index  index.html index.htm;
+        }
+        location /test {
+          return 401;
+        }
+      }
+    }
+
+
+---
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: nginx-test
+  template:
+    metadata:
+      labels:
+        app: nginx-test
+    spec:
+      containers:
+      - name: nginx-test
+        image: nginx
+        ports:
+        - name: web
+          containerPort: 80
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: "512Mi"
+          requests:
+            cpu: "0.1"
+            memory: "128Mi"
+
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-test-svc
+  labels:
+    app: nginx-test
+spec:
+  selector:
+    app: nginx-test
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+
+---
+# Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-test-ingress
+spec:
+  rules:
+  - host: nginx.minipig.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-test-svc
+            port:
+              number: 80
