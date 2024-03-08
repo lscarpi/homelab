@@ -10,10 +10,12 @@ This repository contains the configuration files for my homelab. Feel free to us
 
 - Ubuntu Server
 - k3s
+- docker
 - Cloudflare Tunnel
 
 ### Services
-
+- [Bind9](https://www.isc.org/bind/)
+- [Cert-Manager](https://cert-manager.io/)
 - [Portainer](https://www.portainer.io/)
 - [Traefik](https://doc.traefik.io/traefik/)
 - [Redis](https://redis.io/)
@@ -23,6 +25,15 @@ This repository contains the configuration files for my homelab. Feel free to us
 # Setup Instructions
 
 First, install ubuntu server on the raspberry pi. This can be easily achieved by using the [Raspberry Pi Imager](https://www.raspberrypi.org/software/).
+
+After OS installation, install docker using [this guide](https://docs.docker.com/engine/install/ubuntu/#install-using-the-convenience-script) or [this guide](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository).
+
+These [extra steps](https://docs.docker.com/engine/install/linux-postinstall/) are also recommended.
+
+> You will need to change the internal domain name of your server. This can be done by editing the file in docker/bind9/config/named.conf and the zone file in docker/bind9/config. 
+
+Run the bind9 service. That will give you dns resolution for your network for the local domain.
+> Don't forget to add the DNS server to your router's DHCP settings.
 
 Then, install k3s using the following the official [k3s installation guide](https://docs.k3s.io/quick-start).
 
@@ -38,6 +49,8 @@ It might be necessary to change the Server IP, as it could be set to the private
 It is highly recommended that you set an Application in Zero Trust to secure your cluster. By doing so, you can control who can access your cluster and what they can do. More information can be found [here](https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/self-hosted-apps/).
 
 Now, it's time to deploy Portainer with the help of Helm. To do so, follow the instructions in the [official Portainer documentation](https://docs.portainer.io/v/2.14/start/install/server/kubernetes/baremetal#deploy-using-helm).
+
+The last part is to set up an ingress for the Portainer service. This can be done by applying the ingress configuration from the file in  `k8s/apps/portainer/ingress.yaml`. It will expose the Portainer service under the internal domain using also a certificate from Let's Encrypt.
 
 With Portainer installed, you can set a public access to it in the Cloudflare Tunnel. It can be achieved by:
 
