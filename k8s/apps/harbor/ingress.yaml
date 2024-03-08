@@ -21,6 +21,8 @@ metadata:
   name: harbor-ingress
   namespace: harbor
 spec:
+  entryPoints:
+    - websecure
   routes:
   - kind: Rule
     match: Host(`registry.dev01.internal.minipig.org`) || Host(`registry.minipig.org`)
