@@ -1,0 +1,31 @@
+# SSL Certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: mysql-cert
+  namespace: mysql
+spec:
+  secretName: mysql-cert
+  issuerRef:
+    name: acme-issuer
+    kind: ClusterIssuer
+  dnsNames:
+    - mysql.dev01.internal.minipig.org
+
+
+---
+# Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: mysql-ingress
+  namespace: mysql
+spec:
+  entryPoints:
+    - mysql
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: mysql
+          port: 3306
+          terminationDelay: -1
