@@ -2,10 +2,15 @@ externalURL: http://registry.dev01.internal.minipig.org # Leave it as http, even
 adminPassword: Harbor12345 # Change this password when you login to the Harbor UI
 exposureType: proxy
 
+nginx:
+  enabled: false
+  tls:
+    enabled: false
+
 redis:
   enabled: false
 
 externalRedis:
   host: "redis-master.redis.svc.cluster.local"
   port: 6379
-  password: <password>
+  password: <password>char

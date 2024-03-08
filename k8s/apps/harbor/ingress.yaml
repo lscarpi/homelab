@@ -23,52 +23,11 @@ metadata:
 spec:
   routes:
   - kind: Rule
-    match: (Host(`registry.dev01.internal.minipig.org`) || Host(`registry.minipig.org`)) && PathPrefix(`/`)
+    match: Host(`registry.dev01.internal.minipig.org`) || Host(`registry.minipig.org`)
     priority: 1
     services:
       - kind: Service
-        name: harbor-portal
-        namespace: harbor
-        port: 80
-  - kind: Rule
-    match: (Host(`registry.dev01.internal.minipig.org`) || Host(`registry.minipig.org`)) && PathPrefix(`/c/`)
-    priority: 10
-    services:
-      - kind: Service
-        name: harbor-core
-        namespace: harbor
-        port: 80
-  - kind: Rule
-    match: (Host(`registry.dev01.internal.minipig.org`) || Host(`registry.minipig.org`)) && PathPrefix(`/api/`)
-    priority: 10
-    services:
-      - kind: Service
-        name: harbor-core
-        namespace: harbor
-        port: 80
-  - kind: Rule
-    match: (Host(`registry.dev01.internal.minipig.org`) || Host(`registry.minipig.org`)) && PathPrefix(`/service/`)
-    priority: 10
-    services:
-      - kind: Service
-        name: harbor-core
-        namespace: harbor
-        port: 80
-  - kind: Rule
-    match: (Host(`registry.dev01.internal.minipig.org`) || Host(`registry.minipig.org`)) && PathPrefix(`/v2/`)
-    priority: 10
-    services:
-      - kind: Service
-        name: harbor-core
-        namespace: harbor
-        port: 80
-  - kind: Rule
-    match: (Host(`registry.dev01.internal.minipig.org`) || Host(`registry.minipig.org`)) && PathPrefix(`/chartrepo/`)
-    priority: 10
-    services:
-      - kind: Service
-        name: harbor-core
-        namespace: harbor
+        name: harbor
         port: 80
   tls:
     secretName: harbor-cert
