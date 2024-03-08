@@ -76,6 +76,21 @@ spec:
     port: 80
 
 ---
+# SSL Certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: nginx-test-cert
+  namespace: nginx-test
+spec:
+  secretName: nginx-test-cert
+  issuerRef:
+    name: acme-issuer
+    kind: ClusterIssuer
+  dnsNames:
+    - nginx.dev01.internal.minipig.org
+
+---
 # Ingress
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -83,7 +98,7 @@ metadata:
   name: nginx-test-ingress
 spec:
   rules:
-  - host: nginx.minipig.org
+  - host: nginx.dev01.internal.minipig.org
     http:
       paths:
       - path: /
@@ -93,3 +108,7 @@ spec:
             name: nginx-test-svc
             port:
               number: 80
+  tls:
+  - hosts:
+    - nginx.dev01.internal.minipig.org
+    secretName: nginx-test-cert

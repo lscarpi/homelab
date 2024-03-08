@@ -1,0 +1,37 @@
+# SSL Certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: portainer-cert
+  namespace: portainer
+spec:
+  secretName: portainer-cert
+  issuerRef:
+    name: acme-issuer
+    kind: ClusterIssuer
+  dnsNames:
+    - portainer.dev01.internal.minipig.org
+
+---
+# Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: portainer-ingress
+  namespace: portainer
+spec:
+  rules:
+  - host: portainer.dev01.internal.minipig.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: portainer
+            port:
+              number: 9000
+  tls:
+  - hosts:
+    - portainer.dev01.internal.minipig.org
+    secretName: portainer-cert
