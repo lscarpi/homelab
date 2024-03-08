@@ -11,27 +11,22 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - portainer.dev01.internal.minipig.org
-
 ---
+
 # Ingress
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
   name: portainer-ingress
   namespace: portainer
 spec:
-  rules:
-  - host: portainer.dev01.internal.minipig.org
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: portainer
-            port:
-              number: 9000
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`portainer.dev01.internal.minipig.org`) || Host(`portainer.minipig.org`)
+      kind: Rule
+      services:
+        - name: portainer
+          port: 9000
   tls:
-  - hosts:
-    - portainer.dev01.internal.minipig.org
     secretName: portainer-cert

@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: redis-dns
+  namespace: redis
+spec:
+  type: ExternalName
+  externalName: redis-master.redis.svc.cluster.local
+  ports:
+  - port: 6379

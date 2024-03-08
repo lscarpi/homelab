@@ -92,23 +92,19 @@ spec:
 
 ---
 # Ingress
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
   name: nginx-test-ingress
+  namespace: nginx-test
 spec:
-  rules:
-  - host: nginx.dev01.internal.minipig.org
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: nginx-test-svc
-            port:
-              number: 80
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`nginx.dev01.internal.minipig.org`) || Host(`nginx.minipig.org`)
+      kind: Rule
+      services:
+        - name: nginx-test-svc
+          port: 80
   tls:
-  - hosts:
-    - nginx.dev01.internal.minipig.org
     secretName: nginx-test-cert
