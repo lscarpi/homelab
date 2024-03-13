@@ -13,4 +13,4 @@ redis:
 externalRedis:
   host: "redis-master.redis.svc.cluster.local"
   port: 6379
-  password: <password>char
+  password: <password>

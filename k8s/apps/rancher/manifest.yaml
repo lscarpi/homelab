@@ -1,0 +1,35 @@
+---
+# SSL Certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rancher-cert
+  namespace: cattle-system
+spec:
+  secretName: rancher-cert
+  issuerRef:
+    name: acme-issuer
+    kind: ClusterIssuer
+  dnsNames:
+    - rancher.dev01.internal.minipig.org
+
+---
+# Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: rancher-outside-ingress
+  namespace: cattle-system
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - kind: Rule
+    match: Host(`rancher.minipig.org`)
+    priority: 1
+    services:
+      - kind: Service
+        name: rancher
+        port: 80
+  tls:
+    secretName: rancher-cert

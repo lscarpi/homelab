@@ -1,0 +1,6 @@
+hostname: rancher.dev01.internal.minipig.org
+bootstrapPassword: password
+ingress:
+  tls:
+    source: "secret"
+    secretName: rancher-cert

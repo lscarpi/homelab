@@ -1,3 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: mysql-dns
+  namespace: mysql
+spec:
+  type: ExternalName
+  externalName: mysql.mysql.svc.cluster.local
+  ports:
+  - port: 3306
+
+---
 # SSL Certificate
 apiVersion: cert-manager.io/v1
 kind: Certificate

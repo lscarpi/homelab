@@ -36,7 +36,6 @@ kind: Deployment
 metadata:
   name: nginx-test
 spec:
-  replicas: 1
   selector:
     matchLabels: 
       app: nginx-test
@@ -58,6 +57,34 @@ spec:
           requests:
             cpu: "0.1"
             memory: "128Mi"
+
+---
+# AutoScaler
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx-test-hpa
+  namespace: nginx-test
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx-test
+  minReplicas: 1
+  maxReplicas: 100
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
 
 ---
 # Service
