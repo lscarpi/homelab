@@ -24,12 +24,19 @@ spec:
   entryPoints:
     - websecure
   routes:
-  - kind: Rule
-    match: Host(`registry.dev01.internal.minipig.org`) || Host(`registry.minipig.org`)
-    priority: 1
+  - match: Host(`registry.minipig.org`) && (PathPrefix(`/api/`) || PathPrefix(`/service/`) || PathPrefix(`/v2/`) || PathPrefix(`/chartrepo/`) || PathPrefix(`/c/`))
+    kind: Rule
     services:
-      - kind: Service
-        name: harbor
-        port: 80
+    - name: harbor-core
+      namespace: harbor
+      port: 80
+  - match: Host(`registry.minipig.org`)
+    kind: Rule
+    services:
+    - name: harbor-portal
+      namespace: harbor
+      port: 80
+  
   tls:
     secretName: harbor-cert
+    
