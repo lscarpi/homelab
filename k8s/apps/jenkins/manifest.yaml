@@ -1,0 +1,35 @@
+---
+# SSL Certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: jenkins-cert
+  namespace: jenkins
+spec:
+  secretName: jenkins-cert
+  issuerRef:
+    name: acme-issuer
+    kind: ClusterIssuer
+  dnsNames:
+    - jenkins.dev01.internal.minipig.org
+
+---
+# Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: jenkins-ingress
+  namespace: jenkins
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - kind: Rule
+    match: Host(`jenkins.minipig.org`) || Host(`jenkins.dev01.internal.minipig.org`)
+    priority: 1
+    services:
+      - kind: Service
+        name: jenkins
+        port: 8080
+  tls:
+    secretName: jenkins-cert
