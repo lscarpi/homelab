@@ -1,4 +1,4 @@
-externalURL: https://registry.dev01.internal.minipig.org # Leave it as http, even if you are using https
+externalURL: https://registry.minipig.org # Leave it as http, even if you are using https
 adminPassword: Harbor12345 # Change this password when you login to the Harbor UI
 exposureType: ingress
 

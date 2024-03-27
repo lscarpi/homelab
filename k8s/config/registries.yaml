@@ -1,9 +1,10 @@
+# Make sure to add this file in all nodes
 mirrors:
-  minipig.org:
+  registry.minipig.org:
     endpoint:
-      - https://registry.dev01.internal.minipig.org/v2
+      - https://registry.minipig.org/v2
 configs:
-  minipig.org:
+  registry.minipig.org:
     auth:
       username: robot$k3s
       password: <password>
