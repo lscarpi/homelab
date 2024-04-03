@@ -1,0 +1,35 @@
+---
+# SSL Certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: mailpit-cert
+  namespace: mailpit
+spec:
+  secretName: mailpit-cert
+  issuerRef:
+    name: acme-issuer
+    kind: ClusterIssuer
+  dnsNames:
+    - mailpit.dev01.internal.minipig.org
+
+---
+# Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mailpit-ingress
+  namespace: mailpit
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - kind: Rule
+    match: Host(`mailpit.dev01.internal.minipig.org`) || Host(`mailpit.minipig.org`)
+    priority: 1
+    services:
+      - kind: Service
+        name: mailpit-http
+        port: 80
+  tls:
+    secretName: mailpit-cert
