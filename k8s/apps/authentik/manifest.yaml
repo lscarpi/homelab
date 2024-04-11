@@ -1,0 +1,35 @@
+---
+# SSL Certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: authentik-cert
+  namespace: authentik
+spec:
+  secretName: authentik-cert
+  issuerRef:
+    name: acme-issuer
+    kind: ClusterIssuer
+  dnsNames:
+    - authentik.dev01.internal.minipig.org
+
+---
+# Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: authentik-ingress
+  namespace: authentik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - kind: Rule
+    match: Host(`authentik.minipig.org`) || Host(`authentik.dev01.internal.minipig.org`)
+    priority: 1
+    services:
+      - kind: Service
+        name: authentik-server
+        port: 80
+  tls:
+    secretName: authentik-cert

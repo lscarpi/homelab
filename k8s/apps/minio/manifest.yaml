@@ -1,0 +1,35 @@
+---
+# SSL Certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: minio-cert
+  namespace: minio
+spec:
+  secretName: minio-cert
+  issuerRef:
+    name: acme-issuer
+    kind: ClusterIssuer
+  dnsNames:
+    - minio.dev01.internal.minipig.org
+
+---
+# Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: minio-ingress
+  namespace: minio
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - kind: Rule
+    match: Host(`minio.minipig.org`) || Host(`minio.dev01.internal.minipig.org`)
+    priority: 1
+    services:
+      - kind: Service
+        name: minio
+        port: 9001
+  tls:
+    secretName: minio-cert

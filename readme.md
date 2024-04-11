@@ -33,7 +33,7 @@ After OS installation, install docker using [this guide](https://docs.docker.com
 
 These [extra steps](https://docs.docker.com/engine/install/linux-postinstall/) are also recommended.
 
-Run the pihole service. That will give you dns resolution for your network for the local domain. Make sure to login into pihole and set your local domains in the Local DNS Records section.
+Run the adguard service. That will give you dns resolution for your network for the local domain. Make sure to login into adguard and set your local domains in the Filters -> DNS Rewrites section.
 
 > Don't forget to add the DNS server to your router's DHCP settings.
 

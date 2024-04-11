@@ -1,0 +1,22 @@
+authentik:
+    secret_key: "your-secret-key"
+    # This sends anonymous usage-data, stack traces on errors and
+    # performance data to sentry.io, and is fully opt-in
+    error_reporting:
+        enabled: true
+    postgresql:
+        password: "your-password"
+    redis:
+      host: "redis-master.redis.svc.cluster.local"
+      password: "your-redis-password"
+
+server:
+    ingress:
+        enabled: false
+
+postgresql:
+    enabled: true
+    auth:
+        password: "your-password"
+redis:
+    enabled: false
