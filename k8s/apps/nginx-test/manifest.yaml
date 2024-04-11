@@ -64,7 +64,6 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: nginx-test-hpa
-  namespace: nginx-test
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -108,7 +107,6 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: nginx-test-cert
-  namespace: nginx-test
 spec:
   secretName: nginx-test-cert
   issuerRef:
@@ -123,7 +121,6 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: nginx-test-ingress
-  namespace: nginx-test
 spec:
   entryPoints:
     - websecure
