@@ -1,8 +1,9 @@
 # Make sure to add this file in all nodes
+# In the path /etc/rancher/k3s/registries.yaml
 mirrors:
   registry.minipig.org:
     endpoint:
-      - https://registry.minipig.org/v2
+      - https://registry.dev01.internal.minipig.org/v2
 configs:
   registry.minipig.org:
     auth:

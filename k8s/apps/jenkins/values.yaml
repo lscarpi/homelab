@@ -1,0 +1,17 @@
+controller:
+  jenkinsUrl: "https://jenkins.minipig.org"
+  additionalPlugins: 
+    - oic-auth:4.239.v325750a_96f3b_
+  JCasC:
+    overwriteConfiguration: true
+    securityRealm: |-
+      oic:
+        wellKnownOpenIDConfigurationUrl: "https://authentik.minipig.org/application/o/jenkins/.well-known/openid-configuration"
+        automanualconfigure: auto
+        clientId: "<client_id>"
+        clientSecret: "<client_secret>"
+        overrideScopes: "email openid profile"    
+        userNameField: "preferred_username"
+        fullNameFieldName: "name"
+        emailFieldName: "email"
+        groupsFieldName: "groups"

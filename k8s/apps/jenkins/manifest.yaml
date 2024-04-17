@@ -33,3 +33,41 @@ spec:
         port: 8080
   tls:
     secretName: jenkins-cert
+
+---
+# Role for Jenkins default service account
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: jenkins-default-role
+  namespace: jenkins
+rules:
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+    verbs:
+      - '*'
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - pods/exec
+    verbs:
+      - '*'
+
+---
+# RoleBinding for Jenkins default service account
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: jenkins-default-rolebinding
+  namespace: jenkins
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: jenkins-default-role
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: jenkins

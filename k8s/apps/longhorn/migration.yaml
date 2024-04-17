@@ -27,7 +27,7 @@ spec:
       volumes:
         - name: old-vol
           persistentVolumeClaim:
-            claimName: minio # change to data source pvc
+            claimName: data-authentik-postgresql-temp # change to data source pvc
         - name: new-vol
           persistentVolumeClaim:
-            claimName: minio-tmp # change to data target pvc
+            claimName: data-authentik-postgresql-0 # change to data target pvc

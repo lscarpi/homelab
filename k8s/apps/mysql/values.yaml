@@ -1,0 +1,16 @@
+architecture: standalone
+auth:
+  createDatabase: false
+primary:
+  resources:
+    requests:
+      cpu: 1
+      memory: 1024Mi
+    limits:
+      cpu: 6
+      memory: 12288Mi
+# secondary:
+#   replicaCount: 2
+
+# diagnosticMode:
+#   enabled: true

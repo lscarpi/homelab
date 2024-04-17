@@ -1,0 +1,5 @@
+architecture: standalone
+master:
+  resourcesPreset: "medium"
+auth:
+  enabled: false
