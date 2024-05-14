@@ -1,5 +1,0 @@
-# Place this file in /etc/rancher/k3s/config.yaml
-# Changing the domain for each cluster node
-write-kubeconfig-mode: "0644"
-tls-san:
-  - "dev01.internal.minipig.org"

@@ -1,0 +1,86 @@
+---
+# ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ddclient-config
+data:
+  ddclient.conf: |
+    daemon=300
+    syslog=yes
+    mail=root
+    mail-failure=root
+    pid=/var/run/ddclient.pid
+    ssl=yes
+    use=web, web=https://icanhazip.com, web-skip='\\n\\n'
+    protocol=cloudflare
+    
+
+---
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ddclient
+spec:
+  selector:
+    matchLabels: 
+      app: ddclient
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ddclient
+    spec:
+      containers:
+      - name: ddclient
+        image: linuxserver/ddclient
+        volumeMounts:
+        - name: ddclient-config
+          mountPath: /etc/ddclient
+        - name: file-login
+          mountPath: /run/secrets/cloudflare-email
+          readOnly: true
+        - name: file-password
+          mountPath: /run/secrets/cloudflare-api-key
+          readOnly: true
+        - name: file-zone
+          mountPath: /run/secrets/cloudflare-domain
+          readOnly: true
+        env:
+        - name: FILE_LOGIN
+          value: /run/secrets/cloudflare-email/cloudflare-email
+        - name: FILE_PASSWORD
+          value: /run/secrets/cloudflare-api-key/cloudflare-api-key
+        - name: FILE_ZONE
+          value: /run/secrets/cloudflare-domain/cloudflare-domain
+            
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: "256Mi"
+          requests:
+            cpu: "0.1"
+            memory: "128Mi"
+      volumes:
+      - name: ddclient-config
+        configMap:
+          name: ddclient-config
+      - name: file-login
+        secret:
+          secretName: ddclient-secret
+          items:
+          - key: CLOUDFLARE_EMAIL
+            path: cloudflare-email
+      - name: file-password
+        secret:
+          secretName: ddclient-secret
+          items:
+          - key: CLOUDFLARE_API_KEY
+            path: cloudflare-api-key
+      - name: file-zone
+        secret:
+          secretName: ddclient-secret
+          items:
+          - key: CLOUDFLARE_DOMAIN
+            path: cloudflare-domain

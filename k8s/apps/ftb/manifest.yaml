@@ -1,0 +1,120 @@
+
+--- 
+# Persistent Volume Claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ftb-server-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ftb-server
+spec:
+  selector:
+    matchLabels: 
+      app: ftb-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ftb-server
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - name: ftb-server
+        image: itzg/minecraft-server:latest
+        volumeMounts:
+        - name: ftb-server-data
+          mountPath: /data
+        env:
+        - name: EULA
+          value: "TRUE"
+        - name: MOTD
+          value: "Welcome to the Minipig Server!"
+        - name: JVM_OPTS
+          value: "-Xms4G -Xmx12G"
+        - name: DIFFICULTY
+          value: "normal"
+        - name: TYPE
+          value: "AUTO_CURSEFORGE"
+        - name: CF_SLUG
+          value: "all-the-mods-9"
+        - name: CF_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ftb-server-secret
+              key: CF_API_KEY
+        ports:
+        - name: server
+          containerPort: 25565
+        resources:
+          limits:
+            cpu: "6.0"
+            memory: "12288Mi"
+          requests:
+            cpu: "2.0"
+            memory: "8192Mi"
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      volumes:
+      - name: ftb-server-data
+        persistentVolumeClaim:
+          claimName: ftb-server-data-pvc
+
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: ftb-server-svc
+  labels:
+    app: ftb-server
+spec:
+  selector:
+    app: ftb-server
+  type: ClusterIP
+  ports:
+  - name: server
+    port: 25565
+
+---
+# SSL Certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ftb-server-cert
+spec:
+  secretName: ftb-server-cert
+  issuerRef:
+    name: acme-issuer
+    kind: ClusterIssuer
+  dnsNames:
+    - ftb.dev01.internal.minipig.org
+
+---
+# Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: ftb-server-ingress
+spec:
+  entryPoints:
+    - minecraft
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: ftb-server-svc
+          port: 25565

@@ -16,3 +16,8 @@ spec:
         expose: true
         exposedPort: 3306
         protocol: TCP
+      minecraft:
+        port: 25565
+        expose: true
+        exposedPort: 25565
+        protocol: TCP
